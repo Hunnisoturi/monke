@@ -1,8 +1,9 @@
 #![allow(dead_code)]
 use anyhow::Result;
+use std::fmt::Display;
 
 #[derive(Debug, PartialEq)]
-enum Token {
+pub enum Token {
     Illegal,
     Eof,
 
@@ -40,7 +41,41 @@ enum Token {
     Return,
 }
 
-struct Lexer {
+impl Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        return match self {
+            Token::Illegal => write!(f, "Illegal"),
+            Token::Eof => write!(f, "Eof"),
+            Token::Ident(x) => write!(f, "Ident({})", x),
+            Token::Int(x) => write!(f, "Int({})", x),
+            Token::Assign => write!(f, "Assign"),
+            Token::Plus => write!(f, "Plus"),
+            Token::Minus => write!(f, "Minus"),
+            Token::Bang => write!(f, "Bang"),
+            Token::Asterisk => write!(f, "Asterisk"),
+            Token::Slash => write!(f, "Slash"),
+            Token::LT => write!(f, "LessThan"),
+            Token::GT => write!(f, "GreaterThan"),
+            Token::EQ => write!(f, "Equals"),
+            Token::NotEq => write!(f, "NotEquals"),
+            Token::Comma => write!(f, "Comma"),
+            Token::Semicolon => write!(f, "Semicolon"),
+            Token::LParen => write!(f, "LParen"),
+            Token::RParen => write!(f, "RParen"),
+            Token::LBrace => write!(f, "LBrace"),
+            Token::RBrace => write!(f, "RBrace"),
+            Token::Function => write!(f, "Function"),
+            Token::Let => write!(f, "Let"),
+            Token::True => write!(f, "True"),
+            Token::False => write!(f, "False"),
+            Token::If => write!(f, "If"),
+            Token::Else => write!(f, "Else"),
+            Token::Return => write!(f, "Return"),
+        };
+    }
+}
+
+pub struct Lexer {
     input: Vec<u8>,
     position: usize,
     read_position: usize,
@@ -48,7 +83,7 @@ struct Lexer {
 }
 
 impl Lexer {
-    fn new(input: String) -> Lexer {
+    pub fn new(input: String) -> Lexer {
         let mut lex = Lexer {
             position: 0,
             read_position: 0,
@@ -70,7 +105,7 @@ impl Lexer {
         self.read_position += 1;
     }
 
-    fn next_token(&mut self) -> Result<Token> {
+    pub fn next_token(&mut self) -> Result<Token> {
         self.skip_whitespace();
 
         let tok = match self.ch {
